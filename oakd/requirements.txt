@@ -1,0 +1,2 @@
+aido-protocols-daffy
+depthai==2.4.0.0
