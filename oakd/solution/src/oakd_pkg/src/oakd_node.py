@@ -479,6 +479,6 @@ class OAKDCameraNode(DTROS):
 
 if __name__ == "__main__":
     # Initialize the node
-    oakd_node = basics.OAKDCameraNode(node_name="oakd_node")
+    oakd_node = OAKDCameraNode(node_name="oakd_node")
     # Keep it spinning
     rospy.spin()
