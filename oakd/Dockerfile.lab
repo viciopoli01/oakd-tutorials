@@ -1,9 +1,19 @@
 FROM duckietown/dt-gui-tools:daffy-amd64
 
-RUN curl -fL http://docs.luxonis.com/_static/install_dependencies.sh | bash
-RUN echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | tee /etc/udev/rules.d/80-movidius.rules
-
 RUN apt-get update && apt-get install -y \
+    bc \
+    bzip2 \
+    can-utils \
+    freeglut3-dev \
+    gstreamer1.0-alsa \
+    gstreamer1.0-libav \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-tools \
+    libgstreamer1.0-dev \
+    libgstreamer-plugins-base1.0-dev \
     curl \
     udev \
     ffmpeg \
@@ -20,24 +30,64 @@ RUN apt-get update && apt-get install -y \
     libdc1394-22-dev \
     usbutils \
     wget
+    # llvm \
+    # nlohmann-json3-dev \
+    # libzmq3-dev
 
-RUN wget https://github.com/libusb/libusb/releases/download/v1.0.24/libusb-1.0.24.tar.bz2
-RUN tar xf libusb-1.0.24.tar.bz2
-RUN cd libusb-1.0.24 && \
-    ./configure --disable-udev && \
-    make -j && make install
 
-RUN pip3 install -U \
-    aido-protocols-daffy \
-    depthai==2.4.0.0 \
-    blobconverter==0.0.10
 
-COPY assets/vnc/image/root/Desktop/. /root/Desktop/
-COPY assets/vnc/image/root/Documents/. /root/Documents/
+# RUN apt-get update && apt-get install -y wget build-essential cmake pkg-config libjpeg-dev libtiff5-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev libgtk2.0-dev libgtk-3-dev libatlas-base-dev gfortran
+# RUN wget http://docs.luxonis.com/_static/install_dependencies.sh && chmod +x install_dependencies.sh && ./install_dependencies.sh
 
-COPY assets/vnc/image/root/icons/. /root/.icons/
-COPY assets/vnc/image/usr/bin/. /usr/bin/
-COPY assets/vnc/image/opt/ros/noetic/share/rviz/. /opt/ros/noetic/share/rviz/
+
+
+
+# RUN wget https://github.com/libusb/libusb/releases/download/v1.0.24/libusb-1.0.24.tar.bz2
+# RUN tar xf libusb-1.0.24.tar.bz2
+# RUN cd libusb-1.0.24 && \
+#     ./configure --disable-udev && \
+#     make -j && make install
+
+# RUN echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | tee /etc/udev/rules.d/80-movidius.rules
+
+
+# RUN git clone https://github.com/zeromq/cppzmq.git && cd cppzmq && \
+#     mkdir build && \
+#     cd build && \
+#     cmake .. && \
+#     make install
+
+# RUN git clone https://github.com/xtensor-stack/xtl.git && cd xtl && \
+#     mkdir build && \
+#     cd build && \
+#     cmake .. && \
+#     make install
+
+
+# RUN git clone https://github.com/jupyter-xeus/xeus.git && cd xeus && \
+#     cmake -D BUILD_EXAMPLES=ON -D CMAKE_BUILD_TYPE=Release . && \
+#     make && \
+#     make install
+
+# RUN git clone https://github.com/jupyter-xeus/xeus-cling.git && \
+#     cd xeus-cling && \
+#     mkdir build && \
+#     cd build && \
+#     cmake .. && \
+#     make install
+
+
+COPY assets/setup/depthai_setup.sh .
+RUN ./depthai_setup.sh
+
+RUN pip3 install depthai==2.5.0
+
+# COPY assets/vnc/image/root/Desktop/. /root/Desktop/
+# COPY assets/vnc/image/root/Documents/. /root/Documents/
+
+# COPY assets/vnc/image/root/icons/. /root/.icons/
+# COPY assets/vnc/image/usr/bin/. /usr/bin/
+# COPY assets/vnc/image/opt/ros/noetic/share/rviz/. /opt/ros/noetic/share/rviz/
 
 
 CMD ["dt-launcher-jupyter"]
