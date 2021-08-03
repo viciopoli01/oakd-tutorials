@@ -1,0 +1,25 @@
+#################
+# Build in directory ./oakd
+#################
+
+docker build -t trevphil/oakd-tutorials:v1 -f Dockerfile.lab .
+
+#################
+# Run on Ubuntu
+#################
+
+docker run -it --rm --privileged \
+  --device-cgroup-rule="c 189:* rmw" \
+  -p 8888:8888 \
+  -v /data:/data \
+  -v /run/udev:/run/udev:ro \
+  -v /dev/bus/usb:/dev/bus/usb:ro \
+  trevphil/oakd-tutorials:v1 bash
+
+#################
+# In Docker container
+#################
+
+jupyter notebook --ip 0.0.0.0 --no-browser --allow-root
+
+# Then open 01-basic-integration and run the cells...
