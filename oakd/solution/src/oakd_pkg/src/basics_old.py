@@ -3,14 +3,16 @@
 
 # In[1]:
 
-
 import os
 import sys
 import time
 import yaml
+import rospy
 import numpy as np
 import cv2
 from typing import List, Dict, Callable, Optional, Any
+
+from sensor_msgs.msg import CompressedImage, Image
 
 import depthai as dai
 
@@ -52,8 +54,8 @@ def create_nodes(pipeline: dai.Pipeline) -> Dict[str, dai.Node]:
 
     # STEREO
     stereo = pipeline.createStereoDepth()
-    stereo.initialConfig.setConfidenceThreshold(150)
-    stereo.initialConfig.setMedianFilter(
+    stereo.setConfidenceThreshold(150)
+    stereo.setMedianFilter(
         dai.StereoDepthProperties.MedianFilter.KERNEL_7x7)
     stereo.setLeftRightCheck(False)
     stereo.setExtendedDisparity(False)  # True = better for short-range
@@ -89,13 +91,12 @@ def create_output_links(pipeline: dai.Pipeline) -> Dict[str, dai.XLinkOut]:
 
 def link_nodes_and_outputs(nodes: Dict[str, dai.Node],
                            outputs: Dict[str, dai.XLinkOut]) -> None:
-    # Raw RGB image --> Output to host
+    # Raw RGB image --> Image manipulation module
     nodes['rgb'].preview.link(outputs['rgb'].input)
     # Disparity --> link the raw left & right images as input to stereo
     nodes['left'].out.link(nodes['stereo'].left)
     nodes['right'].out.link(nodes['stereo'].right)
     nodes['stereo'].disparity.link(outputs['disparity'].input)
-    # Rectified images --> Output to host
     nodes['stereo'].rectifiedLeft.link(outputs['left'].input)
     nodes['stereo'].rectifiedRight.link(outputs['right'].input)
 
@@ -126,6 +127,7 @@ def create_output_queues(device: dai.Device,
 def read_data(requested_data: List[str],
               output_queues: Dict[str, dai.DataOutputQueue]) -> Dict[str, Any]:
     data = {name: None for name in requested_data}
+    print("Read image")
     for name in requested_data:
         if name not in output_queues.keys():
             continue

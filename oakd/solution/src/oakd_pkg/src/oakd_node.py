@@ -57,6 +57,7 @@ class OAKDCameraNode(DTROS):
 
         # Frame IDs
         veh_name = rospy.get_namespace().rstrip('/')
+        self.log(f"NAME :  {veh_name}")
         self.frame_ids = {
             'left': veh_name + '/camera_left_frame',
             'right': veh_name + '/camera_right_frame',
@@ -89,7 +90,7 @@ class OAKDCameraNode(DTROS):
                 dt_topic_type=TopicType.DRIVER,
                 dt_help='The stream of JPEG compressed images from OAK-D right camera'),
             'rgb': rospy.Publisher(
-                '~image/compressed',
+                f'{veh_name}/camera_node/image/compressed',
                 CompressedImage,
                 queue_size=1,
                 dt_topic_type=TopicType.DRIVER,
@@ -104,6 +105,7 @@ class OAKDCameraNode(DTROS):
 
         # ---
         self.log('[OAKDCameraNode]: Initialized.')
+        self.start()
 
     @property
     def is_stopped(self):
@@ -188,6 +190,7 @@ class OAKDCameraNode(DTROS):
         """ Image capture procedure.
             Captures images from OAK-D and publishes them
         """
+        self.log("Running")
         if (self._device is None) or (self._pipeline is None):
             self.logerr('Device was not initialized!')
             return
@@ -204,7 +207,7 @@ class OAKDCameraNode(DTROS):
 
             got = list(sorted([k for k, m in msgs.items() if m is not None]))
             if len(got) > 0:
-              self.log('Got {} from OAK-D'.format(', '.join(got)))
+              #self.log('Got {} from OAK-D'.format(', '.join(got)))
               self.publish(msgs)
             else:
               self.log('No images were read from OAK-D!')

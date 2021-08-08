@@ -31,7 +31,7 @@ ros: true
 challenge: "aido2-LF-sim-testing"
 
 files:
-  - file:
+  - notebook:
       target_dir: "solution/src/oakd_pkg/src"
       input_file: "solution/01-basic-integration/basics.ipynb"
 #   - notebook:

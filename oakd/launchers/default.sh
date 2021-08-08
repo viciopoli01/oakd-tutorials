@@ -14,7 +14,10 @@ dt-launchfile-init
 
 # launching app
 # dt-exec roslaunch camera_driver camera_node.launch veh:=$VEHICLE_NAME
-
+echo "NAME : :: "
+echo $VEHICLE_NAME
+source /code/solution/devel/setup.bash
+ls /code/solution/src/*
 dt-exec roslaunch oakd_pkg oakd_basics.launch veh:=$VEHICLE_NAME
 
 # ----------------------------------------------------------------------------
