@@ -14,6 +14,7 @@ from sensor_msgs.srv import SetCameraInfo, SetCameraInfoResponse
 
 from duckietown.dtros import DTROS, NodeType, TopicType, DTParam, ParamType
 
+import depthai as dai
 import basics
 
 
@@ -71,10 +72,10 @@ class OAKDCameraNode(DTROS):
 
     """
 
-    def __init__(self):
+    def __init__(self, node_name):
         # Initialize the DTROS parent class
         super(OAKDCameraNode, self).__init__(
-            node_name='camera',
+            node_name=node_name,
             node_type=NodeType.DRIVER,
             help="Camera driver for reading and publishing OAK-D images"
         )
@@ -165,7 +166,7 @@ class OAKDCameraNode(DTROS):
                 dt_topic_type=TopicType.DRIVER,
                 dt_help='The stream of JPEG compressed images from OAK-D right camera'),
             'rgb': rospy.Publisher(
-                '~image_rgb/compressed',
+                'camera_node/image/compressed',
                 CompressedImage,
                 queue_size=1,
                 dt_topic_type=TopicType.DRIVER,

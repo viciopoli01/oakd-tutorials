@@ -1,7 +1,7 @@
 #challenge: # defaults to all compatible challenges
 #  - aido2-LF-sim-testing
 
-#challenge: [mooc-modcon]
+challenge: [aido2-LF-sim-testing]
 
 protocol: aido2_db18_agent-z2
 user-label: "template-ros"
