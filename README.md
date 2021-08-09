@@ -1,2 +1,1 @@
-This repository contains the OAKD tutorials. 
-It's based on the repository mooc-exercises for the Duckietown MOOC.
+This is an exercises repository to support the Duckietown MOOC.
