@@ -8,7 +8,7 @@ import yaml
 from threading import Thread
 import numpy as np
 import cv2
-
+import rospkg
 from sensor_msgs.msg import CompressedImage
 
 from duckietown.dtros import DTROS, NodeType, TopicType, DTParam, ParamType
@@ -46,10 +46,10 @@ class SegmentationCameraNode(DTROS):
 
     """
 
-    def __init__(self):
+    def __init__(self, node_name):
         # Initialize the DTROS parent class
-        super(OAKDCameraNode, self).__init__(
-            node_name='camera',
+        super(SegmentationCameraNode, self).__init__(
+            node_name=node_name,
             node_type=NodeType.DRIVER,
             help="Camera driver for reading and publishing OAK-D images"
         )
@@ -89,6 +89,7 @@ class SegmentationCameraNode(DTROS):
 
         # ---
         self.log('[OAKDCameraNode]: Initialized.')
+        self.start()
 
     @property
     def is_stopped(self):
@@ -145,9 +146,11 @@ class SegmentationCameraNode(DTROS):
             time.sleep(2)
 
         ###### OAK-D Configuration ######
+        rospack = rospkg.RosPack()
+        cwd = rospack.get_path('oakd_pkg')
 
         self._pipeline = semantic_segmentation.create_pipeline()
-        self._nodes = semantic_segmentation.create_nodes(self._pipeline)
+        self._nodes = semantic_segmentation.create_nodes(self._pipeline, os.path.join(cwd,"models/segmentation_model.blob"))
         self._outputs = semantic_segmentation.create_output_links(self._pipeline)
         semantic_segmentation.link_nodes_and_outputs(self._nodes, self._outputs)
         self._device = semantic_segmentation.create_device(self._pipeline)

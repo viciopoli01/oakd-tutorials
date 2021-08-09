@@ -34,6 +34,9 @@ files:
   - notebook:
       target_dir: "solution/src/oakd_pkg/src"
       input_file: "solution/01-basic-integration/basics.ipynb"
+  - notebook:
+      target_dir: "solution/src/oakd_pkg/src"
+      input_file: "solution/03-semantic-segmentation/semantic_segmentation.ipynb"
 #   - notebook:
 #       target_dir: "solution/src/encoder_pose/src"
 #       input_file: "solution/05-PID-Control/PID_controller.ipynb"
